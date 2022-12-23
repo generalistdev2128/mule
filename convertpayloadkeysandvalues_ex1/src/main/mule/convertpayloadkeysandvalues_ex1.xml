@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="23007f95-2eb9-480b-836f-52f0e77b940c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="59178b80-e998-4cba-b807-c1c8f439ad1f" file="keymap.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="cd9101b5-eace-4444-804a-314def8bbfbf" file="valuemap.yaml" />
+	<flow name="convertpayloadkeysandvalues_ex1Flow" doc:id="add5f214-f307-4868-8f55-d8b4bbac33c2" >
+		<http:listener doc:name="Listener" doc:id="f272341c-4526-492a-9f08-db2237db0a69" config-ref="HTTP_Listener_config" path="/test"/>
+		<ee:transform doc:name="Transform Message" doc:id="8eace1c6-4b20-40ba-a359-49bfb647ca29" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import modules::util::payload_processor as processor
+output application/json
+---
+processor::convertPayloadKeysAndValues(
+	payload,
+	(currObj,currKey,parentKey,parentObj)->(p(parentKey ++ "." ++ currKey ++ ".tkey") default currKey),
+	(currObj,currKey,parentKey)->(p(parentKey ++ "." ++ currObj) default currObj),
+    "accountToCustomer"
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,11 @@
+accountToCustomer:
+  "account":
+    accType:
+      "1": "individual"
+      "2": "business"
+      "3": "business_rep"
+    "address":
+      addressType:
+        "1": "individual_premisis"
+        "2": "business_premisis"
+        "3": "business_rep_premisis"
